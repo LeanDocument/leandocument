@@ -9,6 +9,7 @@ Not support currentry.
 ## Usage
 
 $ cd **LEANDOCUMENT_DIR**
+
 $ leandocument
 
 Open http://localhost:4567/
