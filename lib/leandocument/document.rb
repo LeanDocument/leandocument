@@ -5,7 +5,11 @@
 # puts @doc.to_html
 module Leandocument
   class Document
-    attr_accessor :path, :lang, :settings, :base_path, :indent
+    # lang :: Document language. TODO support default language.
+    # settings :: LeanDocument Settings. TODO read settings.
+    # base_path :: Document path.
+    # indent :: Document indent. Child documents are plus on from parent. Then change to h[2-7] tag from h[1-6] tag. <h1> -> <h2>
+    attr_accessor :lang, :settings, :base_path, :indent
     
     # Generate Document class.
     # ==== Args
