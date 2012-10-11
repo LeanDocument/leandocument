@@ -13,5 +13,13 @@ module Leandocument
       @doc = Document.new(:lang => @env["HTTP_ACCEPT_LANGUAGE"][0,2])
       erb :index
     end
+    
+    get '/*.png' do
+      path = "#{params[:splat].join("/")}.png"
+      @blob = BlobImage.new(:path => path)
+      if @blob.f?
+        send_file @blob.file_path, :type => :png
+      end
+    end
   end
 end

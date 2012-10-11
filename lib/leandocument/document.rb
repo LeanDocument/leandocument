@@ -12,7 +12,7 @@ module Leandocument
     # settings :: LeanDocument Settings. TODO read settings.
     # base_path :: Document path.
     # indent :: Document indent. Child documents are plus on from parent. Then change to h[2-7] tag from h[1-6] tag. <h1> -> <h2>
-    attr_accessor :lang, :settings, :base_path, :indent, :extension
+    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path
     
     # Generate Document class.
     # ==== Args
@@ -23,6 +23,7 @@ module Leandocument
       self.settings = options[:settings] || load_config
       self.lang = options[:lang] || settings["default_locale"]
       self.base_path = options[:base_path] || Dir.pwd
+      self.web_path  = "#{options[:web_path]}/"
       self.indent = options[:indent] || 0
       self.extension = get_extension
     end
@@ -31,13 +32,13 @@ module Leandocument
     # ==== Return
     # HTML content.
     def to_html
-      page = render.to_html
+      page = render
       path = File.dirname(file_path)
       # Get child content.
       # A reflexive.
       dirs(path).each do |dir|
         # Plus one indent from parent. Change h[1-6] tag to h[2-7] if indent is 1.
-        doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings
+        doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings, :web_path => dir.gsub(self.base_path, "")
         page += doc.to_html
       end
       page
@@ -79,7 +80,7 @@ module Leandocument
     # ==== Return
     # Markdown object
     def render_markdown
-      RDiscount.new(exec_trans(content))
+      RDiscount.new(exec_trans(content)).to_html
     end
     alias :render_md :render_markdown
     
@@ -94,6 +95,7 @@ module Leandocument
       self.indent.times do |i|
         content = content.to_s.gsub(/^#/, "##")
       end
+      content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1]('+self.web_path+'\\2)')
       content
     end
     

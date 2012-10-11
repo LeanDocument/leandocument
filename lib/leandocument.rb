@@ -4,6 +4,7 @@ require "sinatra/base"
 require "leandocument/version"
 require "leandocument/server"
 require "leandocument/document"
+require "leandocument/blob_image"
 require "rdiscount"
 require "yaml"
 require 'erb'
