@@ -14,11 +14,13 @@ module Leandocument
       erb :index
     end
     
-    get '/*.png' do
-      path = "#{params[:splat].join("/")}.png"
-      @blob = BlobImage.new(:path => path)
-      if @blob.f?
-        send_file @blob.file_path, :type => :png
+    %w(png jpg gif jpeg).each do |ext|
+      get "/*.#{ext}" do
+        path = "#{params[:splat].join("/")}.#{ext}"
+        @blob = BlobImage.new(:path => path)
+        if @blob.f?
+          send_file @blob.file_path, :type => ext
+        end
       end
     end
   end

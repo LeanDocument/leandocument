@@ -12,7 +12,7 @@ module Leandocument
     # settings :: LeanDocument Settings. TODO read settings.
     # base_path :: Document path.
     # indent :: Document indent. Child documents are plus on from parent. Then change to h[2-7] tag from h[1-6] tag. <h1> -> <h2>
-    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path
+    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :title, :childs
     
     # Generate Document class.
     # ==== Args
@@ -20,12 +20,14 @@ module Leandocument
     # ==== Return
     # New Leandocument Document class.
     def initialize(options = {})
-      self.settings = options[:settings] || load_config
       self.lang = options[:lang] || settings["default_locale"]
       self.base_path = options[:base_path] || Dir.pwd
       self.web_path  = "#{options[:web_path]}/"
       self.indent = options[:indent] || 0
+      self.settings = options[:settings] || load_config
       self.extension = get_extension
+      self.childs = []
+      self.get_title
     end
     
     # Generate HTML content.
@@ -39,6 +41,7 @@ module Leandocument
       dirs(path).each do |dir|
         # Plus one indent from parent. Change h[1-6] tag to h[2-7] if indent is 1.
         doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings, :web_path => dir.gsub(self.base_path, "")
+        self.childs << doc
         page += doc.to_html
       end
       page
@@ -51,6 +54,14 @@ module Leandocument
         return ext if File.exist?(file_path(ext))
       end
       return nil
+    end
+    
+    def content_ary
+      content.split(/\r\n|\r|\n/)
+    end
+    
+    def get_title
+      self.title = content_ary[0]
     end
     
     def load_config
@@ -84,6 +95,16 @@ module Leandocument
     end
     alias :render_md :render_markdown
     
+    def setting_value(*ary)
+      return nil unless self.settings
+      results = self.settings
+      ary.each do |key|
+        return nil unless results[key]
+        results = results[key]
+      end
+      results
+    end
+    
     # Convert to something from content.
     # Currently, Change indent level.
     # TODO support plugin and expand format.
@@ -92,10 +113,11 @@ module Leandocument
     # ==== Return
     # Text content.
     def exec_trans(content)
+      content = content_ary[1..-1].join("\n")
       self.indent.times do |i|
         content = content.to_s.gsub(/^#/, "##")
       end
-      content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1]('+self.web_path+'\\2)')
+      content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1]('+self.web_path+'\\2)') # For image
       content
     end
     
