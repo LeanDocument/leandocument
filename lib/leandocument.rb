@@ -5,6 +5,7 @@ require "leandocument/version"
 require "leandocument/server"
 require "leandocument/document"
 require "rdiscount"
+require "yaml"
 require 'erb'
 
 Leandocument::Server.start
