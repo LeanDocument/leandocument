@@ -5,8 +5,10 @@ require "leandocument/version"
 require "leandocument/server"
 require "leandocument/document"
 require "leandocument/blob_image"
+require "leandocument/repository"
 require "rdiscount"
 require "yaml"
+require 'grit'
 require 'erb'
 
 Leandocument::Server.start

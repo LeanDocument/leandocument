@@ -5,3 +5,4 @@ gemspec
 
 gem 'sinatra', :require => 'sinatra/base'
 gem 'rdiscount', :require => 'rdiscount'
+gem 'grit'

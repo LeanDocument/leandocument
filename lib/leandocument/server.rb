@@ -14,6 +14,18 @@ module Leandocument
       erb :index
     end
     
+    get '/commits' do
+      @repo = Repository.new
+      erb :commits
+    end
+    
+    get '/commits/:id' do
+      @repo = Repository.new
+      @commit = @repo.commits(params[:id])
+      @doc  = Document.new(:lang => @env["HTTP_ACCEPT_LANGUAGE"][0,2], :repository => @repo, :commit => @commit)
+      erb :index
+    end
+    
     %w(png jpg gif jpeg).each do |ext|
       get "/*.#{ext}" do
         path = "#{params[:splat].join("/")}.#{ext}"

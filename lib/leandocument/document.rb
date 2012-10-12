@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # LeanDocument::Document class is converter to text from file content for LeanDocument
 #
 # Usage:
@@ -12,7 +13,7 @@ module Leandocument
     # settings :: LeanDocument Settings. TODO read settings.
     # base_path :: Document path.
     # indent :: Document indent. Child documents are plus on from parent. Then change to h[2-7] tag from h[1-6] tag. <h1> -> <h2>
-    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :title, :childs
+    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :title, :childs, :repository, :commit
     
     # Generate Document class.
     # ==== Args
@@ -27,6 +28,8 @@ module Leandocument
       self.settings = options[:settings] || load_config
       self.extension = get_extension
       self.childs = []
+      self.repository = options[:repository]
+      self.commit     = options[:commit]
       self.get_title
     end
     
@@ -42,6 +45,8 @@ module Leandocument
         # Plus one indent from parent. Change h[1-6] tag to h[2-7] if indent is 1.
         doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings, :web_path => dir.gsub(self.base_path, "")
         self.childs << doc
+        puts "doc.to_html.force_encoding('UTF-8') -> #{doc.to_html.force_encoding('UTF-8')}"
+        puts "page -> #{page}"
         page += doc.to_html
       end
       page
@@ -69,6 +74,10 @@ module Leandocument
       File.exist?(path) ? YAML.load_file(path) : {}
     end
     
+    def file_path_from_root(ext = nil)
+      "#{self.web_path[0..-2]}README.#{self.lang}.#{ext ? ext : self.extension}"
+    end
+    
     # Return file path
     # ==== Return
     # Document file path
@@ -76,11 +85,20 @@ module Leandocument
       "#{self.base_path}/README.#{self.lang}.#{ext ? ext : self.extension}"
     end
     
+    def find_content
+      self.commit.tree.contents.each do |content|
+        return content if content.name == file_path_from_root
+      end
+    end
+    
     # Return file content or blank string
     # ==== Return
     # File content. Or blank string if file not found.
     def content
-      File.exist?(self.file_path) ? open(self.file_path).read : ""
+      if self.commit
+        return find_content ? find_content.data.force_encoding('UTF-8') : ""
+      end
+      File.exist?(self.file_path) ? open(self.file_path).read.force_encoding('UTF-8') : ""
     end
     
     def render
