@@ -43,10 +43,8 @@ module Leandocument
       # A reflexive.
       dirs(path).each do |dir|
         # Plus one indent from parent. Change h[1-6] tag to h[2-7] if indent is 1.
-        doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings, :web_path => dir.gsub(self.base_path, "")
+        doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings, :web_path => dir.gsub(self.base_path, ""), :commit => self.commit, :repository => self.repository
         self.childs << doc
-        puts "doc.to_html.force_encoding('UTF-8') -> #{doc.to_html.force_encoding('UTF-8')}"
-        puts "page -> #{page}"
         page += doc.to_html
       end
       page
@@ -74,20 +72,27 @@ module Leandocument
       File.exist?(path) ? YAML.load_file(path) : {}
     end
     
-    def file_path_from_root(ext = nil)
-      "#{self.web_path[0..-2]}README.#{self.lang}.#{ext ? ext : self.extension}"
+    def file_name(ext = nil)
+      "README.#{self.lang}.#{ext ? ext : self.extension}"
     end
     
     # Return file path
     # ==== Return
     # Document file path
     def file_path(ext = nil)
-      "#{self.base_path}/README.#{self.lang}.#{ext ? ext : self.extension}"
+      "#{self.base_path}/#{file_name(ext)}"
     end
     
-    def find_content
-      self.commit.tree.contents.each do |content|
-        return content if content.name == file_path_from_root
+    def find_content(tree = nil, path = nil)
+      path = path || self.web_path.gsub(/^\//, "")
+      paths = path.split("/")
+      (tree || self.commit.tree).contents.each do |content|
+        puts "content -> #{content.name}"
+        if paths.size > 0
+          return find_content(content, paths[1..-1].join("/")) if content.name == paths[0]
+        else
+          return content if content.name == file_name
+        end
       end
     end
     
@@ -135,7 +140,11 @@ module Leandocument
       self.indent.times do |i|
         content = content.to_s.gsub(/^#/, "##")
       end
-      content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1]('+self.web_path+'\\2)') # For image
+      if self.commit
+        content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1](/commits/'+self.commit.id + self.web_path+'\\2)') # For image
+      else
+        content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1]('+self.web_path+'\\2)') # For image
+      end
       content
     end
     

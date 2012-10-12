@@ -27,6 +27,16 @@ module Leandocument
     end
     
     %w(png jpg gif jpeg).each do |ext|
+      get "/commits/:id/*.#{ext}" do
+        @repo = Repository.new
+        @commit = @repo.commits(params[:id])
+        path = "#{params[:splat].join("/")}.#{ext}"
+        @blob = BlobImage.new(:path => path, :commit => @commit, :repository => @repo)
+        if @blob.f?
+          content_type ext
+          @blob.image
+        end
+      end
       get "/*.#{ext}" do
         path = "#{params[:splat].join("/")}.#{ext}"
         @blob = BlobImage.new(:path => path)
