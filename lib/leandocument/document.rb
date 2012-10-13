@@ -13,7 +13,7 @@ module Leandocument
     # settings :: LeanDocument Settings. TODO read settings.
     # base_path :: Document path.
     # indent :: Document indent. Child documents are plus on from parent. Then change to h[2-7] tag from h[1-6] tag. <h1> -> <h2>
-    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :title, :childs, :repository, :commit
+    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :childs, :repository, :commit
     
     # Generate Document class.
     # ==== Args
@@ -30,14 +30,13 @@ module Leandocument
       self.childs = []
       self.repository = options[:repository]
       self.commit     = options[:commit]
-      self.get_title
     end
     
     # Generate HTML content.
     # ==== Return
     # HTML content.
     def to_html
-      page = render
+      page = render.to_html
       path = File.dirname(file_path)
       # Get child content.
       # A reflexive.
@@ -50,6 +49,23 @@ module Leandocument
       page
     end
     
+    def title
+      render.title
+    end
+    
+    def toc
+      return @toc if @toc
+      @toc = render.toc
+      self.childs.each do |doc|
+        @toc += doc.toc
+      end
+      @toc
+    end
+    
+    def toc=(toc)
+      @toc += toc
+    end
+    
     protected
     
     def get_extension
@@ -57,14 +73,6 @@ module Leandocument
         return ext if File.exist?(file_path(ext))
       end
       return nil
-    end
-    
-    def content_ary
-      content.split(/\r\n|\r|\n/)
-    end
-    
-    def get_title
-      self.title = content_ary[0]
     end
     
     def load_config
@@ -100,10 +108,13 @@ module Leandocument
     # ==== Return
     # File content. Or blank string if file not found.
     def content
+      return @content if @content
       if self.commit
-        return find_content ? find_content.data.force_encoding('UTF-8') : ""
+        @content = find_content ? find_content.data.force_encoding('UTF-8') : ""
+      else
+        @content = File.exist?(self.file_path) ? open(self.file_path).read.force_encoding('UTF-8') : ""
       end
-      File.exist?(self.file_path) ? open(self.file_path).read.force_encoding('UTF-8') : ""
+      @content
     end
     
     def render
@@ -114,7 +125,9 @@ module Leandocument
     # ==== Return
     # Markdown object
     def render_markdown
-      RDiscount.new(exec_trans(content)).to_html
+      return @render if @render
+      @render = Markdown.new(:content => content, :indent => self.indent, :path => self.commit ? "/commits/#{self.commit.id}#{self.web_path}" : self.web_path)
+      @render
     end
     alias :render_md :render_markdown
     
@@ -126,26 +139,6 @@ module Leandocument
         results = results[key]
       end
       results
-    end
-    
-    # Convert to something from content.
-    # Currently, Change indent level.
-    # TODO support plugin and expand format.
-    # ==== Args
-    # content :: File content
-    # ==== Return
-    # Text content.
-    def exec_trans(content)
-      content = content_ary[1..-1].join("\n")
-      self.indent.times do |i|
-        content = content.to_s.gsub(/^#/, "##")
-      end
-      if self.commit
-        content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1](/commits/'+self.commit.id + self.web_path+'\\2)') # For image
-      else
-        content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1]('+self.web_path+'\\2)') # For image
-      end
-      content
     end
     
     # Judgment directry or not.

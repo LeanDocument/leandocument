@@ -8,7 +8,11 @@ module Leandocument
     end
     
     def commits(id = nil)
-      id.nil?? self.repo.commits : self.repo.commits(id).first
+      id.nil?? self.repo.commits : self.repo.commits(id)
+    end
+
+    def branches(id = nil)
+      id.nil?? self.repo.branches : self.repo.branches(id).first
     end
   end
 end

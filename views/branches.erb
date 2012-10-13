@@ -1,0 +1,6 @@
+<h1>Branch List</h1>
+<ul>
+  <% @repo.branches.each do |branch| %>
+    <li><a href="/branches/<%= branch.name %>"><%= branch.name %></a></li>
+  <% end %>
+</ul>
