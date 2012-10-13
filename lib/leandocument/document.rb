@@ -24,7 +24,7 @@ module Leandocument
       self.lang = options[:lang] || settings["default_locale"]
       self.base_path = options[:base_path] || Dir.pwd
       self.web_path  = "#{options[:web_path]}/"
-      self.indent = options[:indent] || 0
+      self.indent = options[:indent] || 1
       self.settings = options[:settings] || load_config
       self.extension = get_extension
       self.childs = []
@@ -95,7 +95,6 @@ module Leandocument
       path = path || self.web_path.gsub(/^\//, "")
       paths = path.split("/")
       (tree || self.commit.tree).contents.each do |content|
-        puts "content -> #{content.name}"
         if paths.size > 0
           return find_content(content, paths[1..-1].join("/")) if content.name == paths[0]
         else

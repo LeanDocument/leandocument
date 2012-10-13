@@ -12,8 +12,6 @@ module Leandocument
     def exec_trans
       content = indented_content
       content = content.gsub(/^!\[(.*)\]\((.*)\)/, '![\\1]('+self.path+'\\2)') # For image
-      content = content.gsub(/^(#+)(.*)$/, '\\1<a name="'+toc_hash('\\2')+'"></a>' + '\\2')
-      content
     end
     
     def indented_content
@@ -21,21 +19,10 @@ module Leandocument
       self.indent.times do |i|
         content = content.to_s.gsub(/^#/, "##")
       end
+      unless self.indent == 1
+        content = "#{"#"*self.indent}#{title}\n#{content}"
+      end
       content
-    end
-    
-    def toc
-      return self.p_toc if self.p_toc
-      self.p_toc = []
-      unless self.indent == 0
-        self.p_toc << {:level => self.indent, :title => self.title, :hash => toc_hash(self.title)}
-      end
-      indented_content.split(/\r\n|\r|\n/).each do |line|
-        if line =~ /^(#+)(.*)$/
-          self.p_toc << {:level => $1.length, :title => $2, :hash => toc_hash($2)}
-        end
-      end
-      self.p_toc
     end
   end
 end

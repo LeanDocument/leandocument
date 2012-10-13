@@ -57,17 +57,12 @@
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
-            <ul class="nav nav-list">
+            <ul class="nav nav-list" id="toc">
               <li class="nav-header">Table of Contents</li>
-              <% if @doc %>
-                <% @doc.toc.each do |toc|%>
-                  <li style="text-indent: <%= toc[:level] -1 %>em;"><a href="#<%= toc[:hash] %>"><%= toc[:title] %></a></li>
-                <% end %>
-              <% end %>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
-        <div class="span9">
+        <div class="span9" id="main">
           <div class="hero-unit">
             <%= yield %>
           </div>
@@ -85,20 +80,9 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/javascripts/jquery.js"></script>
-    <script src="/javascripts/bootstrap-transition.js"></script>
-    <script src="/javascripts/bootstrap-alert.js"></script>
-    <script src="/javascripts/bootstrap-modal.js"></script>
-    <script src="/javascripts/bootstrap-dropdown.js"></script>
-    <script src="/javascripts/bootstrap-scrollspy.js"></script>
-    <script src="/javascripts/bootstrap-tab.js"></script>
-    <script src="/javascripts/bootstrap-tooltip.js"></script>
-    <script src="/javascripts/bootstrap-popover.js"></script>
-    <script src="/javascripts/bootstrap-button.js"></script>
-    <script src="/javascripts/bootstrap-collapse.js"></script>
-    <script src="/javascripts/bootstrap-carousel.js"></script>
-    <script src="/javascripts/bootstrap-typeahead.js"></script>
-
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script src="/javascripts/application.js"></script>
   </body>
 </html>
 
