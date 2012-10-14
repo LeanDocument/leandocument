@@ -12,6 +12,8 @@
 
 Open http://localhost:4567/
 
+![Index](https://dl.dropbox.com/u/49508/leandocument/index.png)
+
 ## LICENSE
 
 MIT License
