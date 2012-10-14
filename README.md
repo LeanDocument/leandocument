@@ -4,11 +4,10 @@
 
 > gem install leandocument
 
-Not support currentry.
-
 ## Usage
 
 > $ cd **LEANDOCUMENT_DIR**
+
 > $ leandocument
 
 Open http://localhost:4567/
@@ -19,4 +18,4 @@ MIT License
 
 ## Developer
 
-Atsushi Nakatsugawa
+[Atsushi Nakatsugawa](https://github.com/moongift)
