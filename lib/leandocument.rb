@@ -14,5 +14,3 @@ require "yaml"
 require 'grit'
 require 'digest/md5'
 require 'erb'
-
-Leandocument::Server.start
