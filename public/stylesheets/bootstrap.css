@@ -164,6 +164,7 @@ body {
   line-height: 20px;
   color: #333333;
   background-color: #ffffff;
+  position: relative;
 }
 
 a {
@@ -5771,4 +5772,25 @@ a.badge:hover {
 
 .affix {
   position: fixed;
+}
+.bs-docs-sidenav.affix {
+  top: 50px;
+}
+
+.bs-docs-sidenav.affix-bottom {
+  position: absolute;
+  top: auto;
+  bottom: 300px;
+}
+
+span.anchor {
+  color: #0088cc;
+  text-decoration: none;
+  font-size: 1.1em;
+  margin-bottom: 0.2em;
+}
+
+span.pointer {
+  cursor: pointer;
+  text-decoration: underline;
 }

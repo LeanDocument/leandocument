@@ -8,9 +8,15 @@
 
 > $ cd **LEANDOCUMENT_DIR**
 
+or 
+> $ git clone https://github.com/LeanDocument/README.git
+> $ cd README
+
+and
+
 > $ leandocument
 
-Open http://localhost:4567/
+> open http://localhost:4567/
 
 ![Index](https://dl.dropbox.com/u/49508/leandocument/index.png)
 
