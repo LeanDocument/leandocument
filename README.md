@@ -10,6 +10,7 @@
 
 or 
 > $ git clone https://github.com/LeanDocument/README.git
+
 > $ cd README
 
 and
