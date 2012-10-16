@@ -1,12 +1,14 @@
 $(function(){
     $('#toc').toc();
     var $window = $(window);
+    /*
     $('.bs-docs-sidenav').affix({
       offset: {
         top: function () { return $window.width() <= 980 ? 90 : 80 }
       , bottom: 270
       }
     })
+    */
 });
 
 $.extend($.fn,{

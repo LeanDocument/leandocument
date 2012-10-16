@@ -19,7 +19,14 @@ and
 
 > open http://localhost:4567/
 
-## Output to HTML
+## ChangeLog
+
+### 0.0.4
+
+- Support brother text.
+
+## TODO
+# Output to HTML
 
 $ leandocument -o OUTPUT_PATH
 

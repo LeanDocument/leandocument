@@ -171,13 +171,12 @@ module Leandocument
     end
     
     def browser?(f)
-      return nil if f == file_name
-      return nil if f == self.filename
       return nil if f == basic_file_name
       f =~ /^README.*\.#{self.lang}\.#{self.extension}/
     end
     
     def files(path)
+      return [] if self.filename != basic_file_name
       ary = Dir.entries(path).collect do |f|
         f(f, path)
       end
