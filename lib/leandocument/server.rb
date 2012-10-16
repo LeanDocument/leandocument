@@ -8,8 +8,8 @@ module Leandocument
     enable :partial_underscores
     set :public_folder, File.dirname(File.dirname(File.dirname(__FILE__))) + '/public'
     set :views,         File.dirname(File.dirname(File.dirname(__FILE__))) + '/views'
-    def self.start
-      self.run!
+    def self.start(options = {})
+      self.run!(options)
     end
     
     get '/' do

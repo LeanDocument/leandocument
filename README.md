@@ -19,6 +19,10 @@ and
 
 > open http://localhost:4567/
 
+## Output to HTML
+
+$ leandocument -o OUTPUT_PATH
+
 ![Index](https://dl.dropbox.com/u/49508/leandocument/index.png)
 
 ## LICENSE

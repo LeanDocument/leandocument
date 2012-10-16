@@ -1,9 +1,13 @@
 #!/usr/bin/env ruby
 require "slop"
 argv = ARGV.dup
-slop = Slop.new(:strict => true, :help => true)
-slop.banner "$ leandocument [options]"
-slop.on :p, :port=, "port number for http server (default is 4567)"
+slop = Slop.parse do
+    banner "$ leandocument [options]"
+    on :p, :port=, "port number for http server (default is 4567)"
+    on :o, :output=, "HTML output path(option)"
+    on :l, :lang=, "Target language(option)"
+end
+
 begin
   slop.parse!(argv)
 rescue => e
@@ -17,4 +21,8 @@ options[:port] ||= 4567
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "leandocument"
 
-Leandocument::Server.start
+unless options[:output].nil?
+  Leandocument::Server.output(options)
+else
+  Leandocument::Server.start(options)
+end

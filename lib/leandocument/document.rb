@@ -13,7 +13,7 @@ module Leandocument
     # settings :: LeanDocument Settings. TODO read settings.
     # base_path :: Document path.
     # indent :: Document indent. Child documents are plus on from parent. Then change to h[2-7] tag from h[1-6] tag. <h1> -> <h2>
-    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :childs, :repository, :commit
+    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :childs, :repository, :commit, :browsers, :filename
     
     # Generate Document class.
     # ==== Args
@@ -21,13 +21,15 @@ module Leandocument
     # ==== Return
     # New Leandocument Document class.
     def initialize(options = {})
-      self.lang = options[:lang] || settings["default_locale"]
+      self.lang = options[:lang] || setting_value("default_locale")
       self.base_path = options[:base_path] || Dir.pwd
       self.web_path  = "#{options[:web_path]}/"
       self.indent = options[:indent] || 1
       self.settings = options[:settings] || load_config
       self.extension = get_extension
+      self.filename = options[:filename] || file_name
       self.childs = []
+      self.browsers = []
       self.repository = options[:repository]
       self.commit     = options[:commit]
     end
@@ -40,6 +42,11 @@ module Leandocument
       path = File.dirname(file_path)
       # Get child content.
       # A reflexive.
+      files(path).each do |file|
+        doc = Document.new :base_path => self.base_path, :lang => self.lang, :indent => self.indent, :settings => self.settings, :web_path => self.web_path, :commit => self.commit, :repository => self.repository, :filename => file
+        self.browsers << doc
+        page += doc.to_html
+      end
       dirs(path).each do |dir|
         # Plus one indent from parent. Change h[1-6] tag to h[2-7] if indent is 1.
         doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings, :web_path => dir.gsub(self.base_path, ""), :commit => self.commit, :repository => self.repository
@@ -81,6 +88,11 @@ module Leandocument
     end
     
     def file_name(ext = nil)
+      return self.filename if self.filename
+      basic_file_name(ext)
+    end
+    
+    def basic_file_name(ext = nil)
       "README.#{self.lang}.#{ext ? ext : self.extension}"
     end
     
@@ -152,6 +164,26 @@ module Leandocument
       File::ftype(expand_path) == "directory" ? expand_path : nil
     end
     
+    def f(f, path)
+      return nil if f =~ /^\./
+      expand_path = File.expand_path(f, path)
+      File::ftype(expand_path) == "file" && browser?(f) ? f : nil
+    end
+    
+    def browser?(f)
+      return nil if f == file_name
+      return nil if f == self.filename
+      return nil if f == basic_file_name
+      f =~ /^README.*\.#{self.lang}\.#{self.extension}/
+    end
+    
+    def files(path)
+      ary = Dir.entries(path).collect do |f|
+        f(f, path)
+      end
+      ary.delete(nil)
+      ary
+    end
     # Return child directories from target directory
     # ==== Args
     # path :: Target directory
