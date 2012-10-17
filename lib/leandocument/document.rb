@@ -21,11 +21,11 @@ module Leandocument
     # ==== Return
     # New Leandocument Document class.
     def initialize(options = {})
-      self.lang = options[:lang] || setting_value("default_locale")
       self.base_path = options[:base_path] || Dir.pwd
+      self.settings = options[:settings] || load_config
+      self.lang = options[:lang] || setting_value("settings", "default_locale")
       self.web_path  = "#{options[:web_path]}/"
       self.indent = options[:indent] || 1
-      self.settings = options[:settings] || load_config
       self.extension = get_extension
       self.filename = options[:filename] || file_name
       self.childs = []

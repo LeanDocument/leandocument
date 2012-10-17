@@ -21,6 +21,11 @@ and
 
 ## ChangeLog
 
+### 0.0.7
+
+- Bug fix
+- Support on Heroku
+
 ### 0.0.6
 
 - Skip render if target file not found.
