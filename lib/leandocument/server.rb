@@ -13,10 +13,7 @@ module Leandocument
     set :public_folder, File.dirname(File.dirname(File.dirname(__FILE__))) + '/public'
     set :views,         File.dirname(File.dirname(File.dirname(__FILE__))) + '/views'
     def self.start(options = {})
-      use Raven::Rack
-      Raven.capture do
-        self.run!(options)
-      end
+      self.run!(options)
     end
     
     get '/' do

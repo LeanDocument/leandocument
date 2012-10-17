@@ -2,7 +2,6 @@ libdir = File.dirname(__FILE__)
 $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 require "sinatra/base"
 require 'sinatra/partial'
-require 'raven'
 require "leandocument/version"
 require "leandocument/server"
 require "leandocument/document"
