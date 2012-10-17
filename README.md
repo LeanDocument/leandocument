@@ -21,6 +21,10 @@ and
 
 ## ChangeLog
 
+### 0.0.8
+
+- Update official site
+
 ### 0.0.7
 
 - Bug fix

@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Leandocument::VERSION
   s.authors     = ["Atsushi Nakatsugawa"]
   s.email       = ["atsushi@moongift.jp"]
-  s.homepage    = "http://leandocument.com/"
+  s.homepage    = "http://leandocument.org/"
   s.summary     = "Ruby library for LeanDocument."
   s.description = "Ruby command and Web viewer for LeanDocument."
 
