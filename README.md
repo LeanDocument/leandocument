@@ -21,6 +21,10 @@ and
 
 ## ChangeLog
 
+### 0.0.6
+
+- Skip render if target file not found.
+
 ### 0.0.4
 
 - Support brother text.

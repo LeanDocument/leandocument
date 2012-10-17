@@ -38,6 +38,7 @@ module Leandocument
     # ==== Return
     # HTML content.
     def to_html
+      return "" unless self.extension
       page = render.to_html
       path = File.dirname(file_path)
       # Get child content.

@@ -1,3 +1,7 @@
+Raven.configure do |config|
+  config.dsn = 'https://65b7938acfbc45a0882bb8c80392b189:43d9098ad5124dfcbf188b08343dde80@app.getsentry.com/2978'
+end
+
 module Leandocument
   # Your code goes here...
   class Server < Sinatra::Base
@@ -9,7 +13,10 @@ module Leandocument
     set :public_folder, File.dirname(File.dirname(File.dirname(__FILE__))) + '/public'
     set :views,         File.dirname(File.dirname(File.dirname(__FILE__))) + '/views'
     def self.start(options = {})
-      self.run!(options)
+      use Raven::Rack
+      Raven.capture do
+        self.run!(options)
+      end
     end
     
     get '/' do
