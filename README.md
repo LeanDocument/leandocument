@@ -21,6 +21,10 @@ and
 
 ## ChangeLog
 
+### 0.0.9
+
+- Remove raven
+
 ### 0.0.8
 
 - Update official site
