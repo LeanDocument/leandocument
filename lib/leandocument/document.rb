@@ -13,7 +13,7 @@ module Leandocument
     # settings :: LeanDocument Settings. TODO read settings.
     # base_path :: Document path.
     # indent :: Document indent. Child documents are plus on from parent. Then change to h[2-7] tag from h[1-6] tag. <h1> -> <h2>
-    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :childs, :repository, :commit, :browsers, :filename
+    attr_accessor :lang, :settings, :base_path, :indent, :extension, :web_path, :childs, :repository, :commit, :browsers, :filename, :error_message
     
     # Generate Document class.
     # ==== Args
@@ -34,11 +34,22 @@ module Leandocument
       self.commit     = options[:commit]
     end
     
+    def e?
+      return (self.error_message = "File not found. #{file_path}(#{SUPPORT_EXTENSIONS.join("|")})") unless get_extension
+      return (self.error_message = "Something wrong setting file. #{config_file_path}") unless self.settings
+      return (self.error_message = "File convert error. Please check file encoding. LeanDocument is allow only UTF-8. #{file_path}") unless self.title
+      nil
+    end
+    
+    def e
+      self.error_message
+    end
+    
     # Generate HTML content.
     # ==== Return
     # HTML content.
     def to_html
-      return "" unless self.extension
+      return e if e?
       page = render.to_html
       path = File.dirname(file_path)
       # Get child content.
@@ -58,7 +69,12 @@ module Leandocument
     end
     
     def title
-      render.title
+      return "" unless render
+      begin
+        render.title
+      rescue ArgumentError => e
+        nil
+      end
     end
     
     def toc
@@ -83,9 +99,20 @@ module Leandocument
       return nil
     end
     
+    def config_file_path
+      "#{self.base_path}/#{SETTING_FILE_NAME}"
+    end
+    
     def load_config
-      path = "#{self.base_path}/#{SETTING_FILE_NAME}"
-      File.exist?(path) ? YAML.load_file(path) : {}
+      if File.exist?(config_file_path)
+        begin
+          YAML.load_file(config_file_path)
+        rescue Psych::SyntaxError => e
+          nil
+        end
+      else
+        {}
+      end
     end
     
     def file_name(ext = nil)
@@ -130,6 +157,7 @@ module Leandocument
     end
     
     def render
+      return nil unless self.extension
       send("render_#{self.extension}")
     end
     

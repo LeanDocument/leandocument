@@ -21,6 +21,10 @@ and
 
 ## ChangeLog
 
+### 0.0.11
+
+- Add error check.
+
 ### 0.0.9
 
 - Remove raven
