@@ -21,6 +21,10 @@ and
 
 ## ChangeLog
 
+### 0.1.0
+
+- Dummy gem version update.
+
 ### 0.0.11
 
 - Add error check.
