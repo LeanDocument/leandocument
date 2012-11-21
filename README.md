@@ -4,6 +4,8 @@
 
 > gem install leandocument
 
+- Install Python and docutils if you use reStructuredText.
+
 ## Usage
 
 > $ cd **LEANDOCUMENT_DIR**
@@ -20,6 +22,14 @@ and
 > open http://localhost:4567/
 
 ## ChangeLog
+
+### 0.1.2
+
+- Support reStructuredText.
+
+### 0.1.1
+
+- Move to Document.content method to public.
 
 ### 0.1.0
 

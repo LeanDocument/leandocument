@@ -9,7 +9,9 @@ require "leandocument/blob_image"
 require "leandocument/repository"
 require "leandocument/render"
 require "leandocument/render/markdown"
+require "leandocument/render/re_structured_text"
 require "rdiscount"
+require 'rbst'
 require "yaml"
 require 'grit'
 require 'digest/md5'

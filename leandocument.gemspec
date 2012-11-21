@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'grit'
   s.add_dependency 'rdiscount'
   s.add_dependency 'sinatra-partial'
+  s.add_dependency 'RbST'
   # s.add_development_dependency "rspec"
   # s.add_runtime_dependency "rest-client"
 end

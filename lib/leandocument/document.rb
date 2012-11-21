@@ -7,7 +7,7 @@
 module Leandocument
   class Document
     SETTING_FILE_NAME = "settings.yml"
-    SUPPORT_EXTENSIONS = %w(md textile markdown mdown rdoc org creole mediawiki)
+    SUPPORT_EXTENSIONS = %w(md textile markdown mdown rdoc org creole mediawiki rst rest)
     
     # lang :: Document language. TODO support default language.
     # settings :: LeanDocument Settings. TODO read settings.
@@ -49,6 +49,7 @@ module Leandocument
     # ==== Return
     # HTML content.
     def to_html
+      return "" unless file_name
       return e if e?
       page = render.to_html
       path = File.dirname(file_path)
@@ -90,10 +91,24 @@ module Leandocument
       @toc += toc
     end
     
+    # Return file content or blank string
+    # ==== Return
+    # File content. Or blank string if file not found.
+    def content
+      return @content if @content
+      if self.commit
+        @content = find_content ? find_content.data.force_encoding('UTF-8') : ""
+      else
+        @content = File.exist?(self.file_path) ? open(self.file_path).read.force_encoding('UTF-8') : ""
+      end
+      @content
+    end
+    
     protected
     
     def get_extension
       SUPPORT_EXTENSIONS.each do |ext|
+        next unless file_path(ext)
         return ext if File.exist?(file_path(ext))
       end
       return nil
@@ -121,13 +136,23 @@ module Leandocument
     end
     
     def basic_file_name(ext = nil)
-      "README.#{self.lang}.#{ext ? ext : self.extension}"
+      f = "README.#{self.lang}.#{ext ? ext : self.extension}"
+      return f if File.exist? f
+      ary = Dir.entries(self.base_path).collect do |f|
+        if f =~ /^README\.([a-z]{2})\.(#{SUPPORT_EXTENSIONS.join("|")})/
+            self.lang = $1
+          self.extension = $2
+          return f
+        end
+      end
+      nil
     end
     
     # Return file path
     # ==== Return
     # Document file path
     def file_path(ext = nil)
+      return nil unless file_name(ext)
       "#{self.base_path}/#{file_name(ext)}"
     end
     
@@ -141,19 +166,6 @@ module Leandocument
           return content if content.name == file_name
         end
       end
-    end
-    
-    # Return file content or blank string
-    # ==== Return
-    # File content. Or blank string if file not found.
-    def content
-      return @content if @content
-      if self.commit
-        @content = find_content ? find_content.data.force_encoding('UTF-8') : ""
-      else
-        @content = File.exist?(self.file_path) ? open(self.file_path).read.force_encoding('UTF-8') : ""
-      end
-      @content
     end
     
     def render
@@ -170,6 +182,14 @@ module Leandocument
       @render
     end
     alias :render_md :render_markdown
+    
+    def render_rst
+      return @render if @render
+      @render = ReStructuredText.new(:content => content, :indent => self.indent, :path => self.commit ? "/commits/#{self.commit.id}#{self.web_path}" : self.web_path)
+      @render
+    end
+    alias :render_re_structured_text :render_rst
+    alias :render_rest :render_rst
     
     def setting_value(*ary)
       return nil unless self.settings
