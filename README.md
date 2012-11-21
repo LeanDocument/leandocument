@@ -23,6 +23,10 @@ and
 
 ## ChangeLog
 
+### 0.1.3
+
+- Fix bug. Sub folder inherit by parent Web root path.
+
 ### 0.1.2
 
 - Support reStructuredText.

@@ -62,7 +62,7 @@ module Leandocument
       end
       dirs(path).each do |dir|
         # Plus one indent from parent. Change h[1-6] tag to h[2-7] if indent is 1.
-        doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings, :web_path => dir.gsub(self.base_path, ""), :commit => self.commit, :repository => self.repository
+        doc = Document.new :base_path => dir, :lang => self.lang, :indent => self.indent + 1, :settings => self.settings, :web_path => self.web_path[0..-2] + dir.gsub(self.base_path, ""), :commit => self.commit, :repository => self.repository
         self.childs << doc
         page += doc.to_html
       end
