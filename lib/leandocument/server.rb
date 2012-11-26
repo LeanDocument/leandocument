@@ -118,6 +118,9 @@ module Leandocument
         if @blob.f?
           if settings.embed
             file_path = "#{settings.output}#{path}"
+            unless File.exist?(File.dirname(file_path))
+              FileUtils.mkdir_p(File.dirname(file_path))
+            end
             File.open(file_path, "w") do |f|
               f.write @blob.image
             end

@@ -25,6 +25,10 @@ and
 
 ### 0.1.4
 
+- Output HTML. Include sub directory images.
+
+### 0.1.4
+
 - Output HTML. Using -o option.
 
 ### 0.1.3
