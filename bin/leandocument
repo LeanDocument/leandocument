@@ -21,8 +21,4 @@ options[:port] ||= 4567
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "leandocument"
 
-unless options[:output].nil?
-  Leandocument::Server.output(options)
-else
-  Leandocument::Server.start(options)
-end
+Leandocument::Server.start(options)

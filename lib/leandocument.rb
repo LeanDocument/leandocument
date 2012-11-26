@@ -1,5 +1,6 @@
 libdir = File.dirname(__FILE__)
 $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
+require 'open-uri'
 require "sinatra/base"
 require 'sinatra/partial'
 require "leandocument/version"
